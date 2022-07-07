@@ -23,25 +23,16 @@ public class DataGenerator {
                 logger.info("Using existing database");
                 return;
             }
-            int seed = 123;
-
             logger.info("Generating demo data");
 
             logger.info("... generating 2 User entities...");
-            User user = new User();
-            user.setName("John Normal");
-            user.setUsername("user");
-            user.setHashedPassword(passwordEncoder.encode("user"));
-            user.setProfilePictureUrl(
-                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=128&h=128&q=80");
-            user.setRoles(Collections.singleton(Role.USER));
-            userRepository.save(user);
+
             User admin = new User();
-            admin.setName("Emma Powerful");
+            admin.setName("Shubham Kumar Sinha");
             admin.setUsername("admin");
             admin.setHashedPassword(passwordEncoder.encode("admin"));
             admin.setProfilePictureUrl(
-                    "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=128&h=128&q=80");
+                    "https://www.upwork.com/profile-portraits/c1feREPYOvZYxLmzyecEu12ok01A13xBCOo4_BWj0lpB3oxlbDMVmtxcubJj1GRNv7");
             admin.setRoles(Set.of(Role.USER, Role.ADMIN));
             userRepository.save(admin);
 

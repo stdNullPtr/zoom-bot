@@ -1,14 +1,14 @@
 package com.xaxoxuxu.application.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Getter
 @Setter
+@Component
 public class ZoomMeeting
 {
     private String meetingId;

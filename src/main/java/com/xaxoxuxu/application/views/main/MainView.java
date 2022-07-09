@@ -1,10 +1,8 @@
 package com.xaxoxuxu.application.views.main;
 
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -13,6 +11,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.xaxoxuxu.application.model.ZoomMeeting;
+import com.xaxoxuxu.application.service.ZoomService;
 import com.xaxoxuxu.application.views.MainLayout;
 
 import javax.annotation.security.RolesAllowed;
@@ -25,16 +24,21 @@ public class MainView extends VerticalLayout
 {
     private final TextField meetingId;
     private final TextField meetingPassword;
-    private final Label currentInstances;
-    private final Label currentInstancesText;
+    private final Label info;
+    private final Label isRunning;
+    private final Label isRunningState;
     private final Button goButton;
     private final Button stopButton;
     private final Binder<ZoomMeeting> zoomMeetingInfoBinder;
+    private final ZoomService zoomService;
 
-    public MainView()
+    public MainView(ZoomService zoomService)
     {
-        currentInstancesText = new Label("Current instances: ");
-        currentInstances = new Label("0");
+        this.zoomService = zoomService;
+
+        info = new Label("Note: input.txt required in same directory");
+        isRunningState = new Label("Is it running: ");
+        isRunning = new Label("no");
 
         meetingId = new TextField("Meeting ID");
         meetingPassword = new TextField("Meeting Password");
@@ -48,11 +52,13 @@ public class MainView extends VerticalLayout
         createMainView();
     }
 
+    private static boolean isNumeric(String str)
+    {
+        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    }
+
     private void createMainView()
     {
-        goButton.addClickListener(e -> Notification.show("Hello " + meetingId.getValue()));
-        goButton.addClickShortcut(Key.ENTER);
-
         zoomMeetingInfoBinder.forField(meetingId)
                 .asRequired("Meeting ID is required")
                 .withValidator(field -> !field.isEmpty(), "Meeting ID is required")
@@ -66,10 +72,24 @@ public class MainView extends VerticalLayout
         zoomMeetingInfoBinder.addValueChangeListener(e -> goButton.setEnabled(zoomMeetingInfoBinder.isValid()));
         goButton.setEnabled(false);
 
-        add(new HorizontalLayout(currentInstancesText, currentInstances),
+        goButton.addClickListener(e ->
+        {
+            if (zoomMeetingInfoBinder.isValid())
+            {
+                zoomService.StartBotRoutine(meetingId.getValue(), meetingPassword.getValue());
+                isRunning.setText("yes");
+            }
+        });
+        stopButton.addClickListener(e ->
+        {
+            zoomService.StopBotRoutine();
+            isRunning.setText("no");
+        });
+
+        add(new HorizontalLayout(info),
+                new HorizontalLayout(isRunningState, isRunning),
                 new HorizontalLayout(meetingId),
                 new HorizontalLayout(meetingPassword),
                 new HorizontalLayout(goButton, stopButton));
     }
-
 }

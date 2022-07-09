@@ -1,6 +1,5 @@
 package com.xaxoxuxu.application.service;
 
-import com.beust.ah.A;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -10,17 +9,19 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chromium.ChromiumDriver;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,9 +41,9 @@ public class SeleniumService
         WebDriverManager.chromedriver().setup();
         taskTemplate = null;
         currentTasks = new ArrayList<>();
-        drivers = Collections.synchronizedList(new ArrayList<ChromeDriver>());
+        drivers = Collections.synchronizedList(new ArrayList<>());
         options = new ChromeOptions();
-       // options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200", "--ignore-certificate-errors", "--disable-extensions", "--no-sandbox", "--disable-dev-shm-usage");
+        // options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200", "--ignore-certificate-errors", "--disable-extensions", "--no-sandbox", "--disable-dev-shm-usage");
         runningInstances = new AtomicInteger(0);
     }
 
@@ -55,19 +56,22 @@ public class SeleniumService
             return;
         }
 
-        Path path = Paths.get("src/main/resources/input.txt");
         List<String> usernames = null;
+        Resource inputFile = new ClassPathResource("input.txt");
+
         try
         {
-            usernames = Files.readAllLines(path);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputFile.getInputStream()));
+
+            usernames = reader.lines().toList();
         } catch (IOException ex)
         {
             log.error("Can't read file!", ex);
         }
 
         log.info("Starting selenium async instance...");
-        //taskTemplate = () -> AsyncTask(meetingId, meetingPassword);
-        for (int i = 0; i < usernames.size(); i++)
+
+        for (int i = 0; i < Objects.requireNonNull(usernames).size(); i++)
         {
             List<String> finalUsernames = usernames;
             int finalI = i;

@@ -12,9 +12,11 @@ import com.xaxoxuxu.application.views.MainLayout;
 @PageTitle("About")
 @Route(value = "about", layout = MainLayout.class)
 @AnonymousAllowed
-public class AboutView extends VerticalLayout {
+public class AboutView extends VerticalLayout
+{
 
-    public AboutView() {
+    public AboutView()
+    {
         setSpacing(false);
 
         Image img = new Image("images/empty-plant.png", "placeholder plant");

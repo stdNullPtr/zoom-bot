@@ -9,14 +9,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chromium.ChromiumDriver;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +42,7 @@ public class SeleniumService
         currentTasks = new ArrayList<>();
         drivers = Collections.synchronizedList(new ArrayList<>());
         options = new ChromeOptions();
-        // options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200", "--ignore-certificate-errors", "--disable-extensions", "--no-sandbox", "--disable-dev-shm-usage");
+        options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200", "--ignore-certificate-errors", "--disable-extensions", "--no-sandbox", "--disable-dev-shm-usage");
         runningInstances = new AtomicInteger(0);
     }
 
@@ -57,13 +56,11 @@ public class SeleniumService
         }
 
         List<String> usernames = null;
-        Resource inputFile = new ClassPathResource("input.txt");
 
         try
         {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputFile.getInputStream()));
-
-            usernames = reader.lines().toList();
+            Path path = Paths.get("input.txt");
+            usernames = Files.readAllLines(path);
         } catch (IOException ex)
         {
             log.error("Can't read file!", ex);

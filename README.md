@@ -1,5 +1,8 @@
 # Zoom Bot
 
+## *Still in Development*
+This is a proof of concept simple app that joins bot into a zoom call. No description/guide will be given - read the code.
+
 ## Running the application
 
 The project is a standard Maven project. To run it from the command line,

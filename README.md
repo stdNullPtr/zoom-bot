@@ -1,7 +1,7 @@
 # Zoom Bot
 
 ## *Still in Development*
-This is a proof of concept simple app that joins bot into a zoom call. No description/guide will be given - read the code.
+This is a proof of concept simple app that joins bots into a zoom call. No description/guide will be given - read the code.
 
 ## Running the application
 
